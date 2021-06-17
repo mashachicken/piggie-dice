@@ -5,22 +5,23 @@ function PigDice (player, total, score, turn) {
   this.turn = turn;
 }
 
-let randomNum = Math.floor(Math.random(1, 7) * (7-1) + 1);
-console.log(randomNum)
+
 PigDice.prototype.roll = function() {
+  let randomNum = Math.floor(Math.random(1, 7) * (7-1) + 1);
   console.log(this.player)
-  if (this.player === 'Masha') {
-    this.scoreP1 = randomNum;
-    this.total += this.scoreP1;
+  if (this.player === 'Masha' && this.turn === true) {
+    this.score = randomNum;
+    this.total += this.score;
+    console.log(this.total)
 }
 if (this.player === 'Lisa') {
-  this.scoreP2 = randomNum;  
+  this.score = randomNum;  
   this.total += this.score;
 }
 }
 
 PigDice.prototype.hold = function() {
-  this.score = randomNum;
+  this.total = this.score;
   
 }
 
@@ -28,37 +29,39 @@ PigDice.prototype.hold = function() {
 $(document).ready(function () {
   let playerName1 = 'Masha';
   let playerName2 = 'Lisa'
+  let total1 = 0;
+  let total2 = 0;
   let scoreP1 = 0;
   let scoreP2 = 0;
   let turnPlayer1 = true;
   let turnPlayer2 = false;
-  let booleanVal = true;
   console.log('hellow')
 
+  let gameStartP1 = new PigDice(playerName1, total1, scoreP1, turnPlayer1)
+  let gameStartP2 = new PigDice(playerName2, total2, scoreP2, turnPlayer2)
   $('#roll').click(function(){ 
-  console.log('rolled')
-  let gameStartP1 = new PigDice(playerName1, 0, scoreP1, turnPlayer1)
-  let gameStartP2 = new PigDice(playerName2, 0, scoreP2, turnPlayer2)
-  if (turnPlayer1 === true) {
-    gameStartP1.roll()
-    turnPlayer1 = !booleanVal;
-    console.log('masha rolled')
-    console.log(gameStartP1)
-    $('#score').append(turnPlayer1.score)
-    $('.result').append(turnPlayer1.total)
-  } 
-  else if (turnPlayer2 === true) {
+    if (gameStartP2.turn === true ) {
     gameStartP2.roll()
-    turnPlayer2 = !booleanVal;
+    gameStartP2.turn = !turnPlayer1; 
+    gameStartP1.turn = !turnPlayer2;  
     console.log('lisa rolled')
-    console.log(gameStartP2)
-    $('#score').append(turnPlayer2.score)
-    $('.result').append(turnPlayer2.total)
+    $('#score2').html(gameStartP2.score)
+    $('#result2').html(gameStartP2.total)
   }
+  else if (gameStartP1.turn === true) {
+    console.log(gameStartP2.turn)
+    gameStartP1.roll()
+    gameStartP1.turn = !turnPlayer1;
+    gameStartP2.turn = !turnPlayer2;
+    console.log(gameStartP2.turn)
+    $('#score1').html(gameStartP1.score)
+    console.log(gameStartP1.score)
+    $('#result1').html(gameStartP1.total)
+  } 
   });
 
   $('#hold').click(function(){
-    this.turn =! this.turn
+    this.turn =! this.turn;
     this.total += this.score; 
     this.turn = false;
 })
